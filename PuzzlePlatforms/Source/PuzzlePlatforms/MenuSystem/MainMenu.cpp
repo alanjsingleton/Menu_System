@@ -20,6 +20,9 @@ bool UMainMenu::Initialize()
 	if (!ensure(CancelJoinMenuButton != nullptr)) { return false; }
 	CancelJoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::CancelJoinMenu);
 
+	if (!ensure(JoinGameButton != nullptr)) { return false; }
+	JoinGameButton->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
+
 	return true;
 }
 
@@ -82,7 +85,17 @@ void UMainMenu::OpenMainMenu()
 
 void UMainMenu::CancelJoinMenu()
 {
-	if (!ensure(IPAddressInput != nullptr)) { return; }
-	IPAddressInput->SetText(FText::GetEmpty());
+	if (!ensure(IPAddressField != nullptr)) { return; }
+	IPAddressField->SetText(FText::GetEmpty());
 	OpenMainMenu();
+}
+
+void UMainMenu::JoinServer()
+{
+	if (MenuInterface != nullptr)
+	{
+		if (!ensure(IPAddressField != nullptr)) { return; }
+		const FString& Address = IPAddressField->GetText().ToString();
+		MenuInterface->Join(Address);
+	}
 }
